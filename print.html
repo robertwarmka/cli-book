@@ -1,0 +1,407 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Writting Command Line Tools</title>
+        
+        <meta name="robots" content="noindex" />
+        
+
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+        <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro:500" rel="stylesheet" type="text/css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        
+
+        
+    </head>
+    <body class="light">
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "";
+            var default_theme = "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            document.body.className = theme;
+            document.querySelector('html').className = theme + ' js';
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li><a href="intro.html"><strong aria-hidden="true">1.</strong> Intro</a></li><li><a href="shell/shell.html"><strong aria-hidden="true">2.</strong> Shell</a></li><li><ol class="section"><li><a href="shell/shell_basics.html"><strong aria-hidden="true">2.1.</strong> basics</a></li><li><a href="shell/shell_tools.html"><strong aria-hidden="true">2.2.</strong> tools</a></li></ol></li><li><a href="cli/clis.html"><strong aria-hidden="true">3.</strong> CLIs</a></li><li><ol class="section"><li><a href="cli/cli_syntax.html"><strong aria-hidden="true">3.1.</strong> Syntax</a></li><li><a href="cli/cli_cfg.html"><strong aria-hidden="true">3.2.</strong> Configuration</a></li><li><a href="cli/cli_best_practice.html"><strong aria-hidden="true">3.3.</strong> Best Practice</a></li><li><a href="cli/tui.html"><strong aria-hidden="true">3.4.</strong> TUIs</a></li><li><a href="cli/languages/languages.html"><strong aria-hidden="true">3.5.</strong> Language Specifics</a></li><li><ol class="section"><li><a href="cli/languages/c.html"><strong aria-hidden="true">3.5.1.</strong> C</a></li><li><a href="cli/languages/cpp.html"><strong aria-hidden="true">3.5.2.</strong> C++</a></li><li><a href="cli/languages/java.html"><strong aria-hidden="true">3.5.3.</strong> Java</a></li><li><a href="cli/languages/python.html"><strong aria-hidden="true">3.5.4.</strong> Python</a></li><li><a href="cli/languages/rust.html"><strong aria-hidden="true">3.5.5.</strong> Rust</a></li><li><a href="cli/languages/ruby.html"><strong aria-hidden="true">3.5.6.</strong> Ruby</a></li></ol></li></ol></li><li><a href="references/references.html"><strong aria-hidden="true">4.</strong> References</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                
+                <div id="menu-bar" class="menu-bar">
+                    <div id="menu-bar-sticky-container">
+                        <div class="left-buttons">
+                            <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                                <i class="fa fa-bars"></i>
+                            </button>
+                            <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                                <i class="fa fa-paint-brush"></i>
+                            </button>
+                            <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                                <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                            </ul>
+                            
+                            <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                                <i class="fa fa-search"></i>
+                            </button>
+                            
+                        </div>
+
+                        <h1 class="menu-title">Writting Command Line Tools</h1>
+
+                        <div class="right-buttons">
+                            <a href="print.html" title="Print this book" aria-label="Print this book">
+                                <i id="print-button" class="fa fa-print"></i>
+                            </a>
+                            
+                        </div>
+                    </div>
+                </div>
+
+                
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" name="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1><a class="header" href="#introduction" id="introduction">Introduction</a></h1>
+<h2><a class="header" href="#good-tools-mater" id="good-tools-mater">Good tools mater!</a></h2>
+<p><img src="https://imgs.xkcd.com/comics/tar.png" alt="xkcd-1168" />
+<strong>\BY-NC 2.5</strong> source: <a href="https://xkcd.com/1168/">xkcd.com</a></p>
+<h2><a class="header" href="#why-clis" id="why-clis">Why CLIs</a></h2>
+<p>** TBD **</p>
+<h2><a class="header" href="#structure-of-this-book" id="structure-of-this-book">Structure of This Book</a></h2>
+<p>** TBD **</p>
+<h1><a class="header" href="#shell" id="shell">Shell</a></h1>
+<p>** TBD **: Summary what this capter is about e.g.: shell basic cli users and dev should now!</p>
+<h1><a class="header" href="#basics" id="basics">Basics</a></h1>
+<h2><a class="header" href="#signals" id="signals">Signals</a></h2>
+<p>** TBD **</p>
+<h2><a class="header" href="#environment-variables" id="environment-variables">Environment Variables</a></h2>
+<p>** TBD **</p>
+<h2><a class="header" href="#streams-stdin-stdout-stderr" id="streams-stdin-stdout-stderr">Streams stdin, stdout, stderr</a></h2>
+<p>** TBD **</p>
+<h3><a class="header" href="#redirection" id="redirection">Redirection</a></h3>
+<p>** TBD **</p>
+<h3><a class="header" href="#pipes" id="pipes">Pipes</a></h3>
+<p>** TBD **</p>
+<h2><a class="header" href="#exit-codes" id="exit-codes">Exit Codes</a></h2>
+<p>** TBD **</p>
+<h1><a class="header" href="#tools" id="tools">Tools</a></h1>
+<h2><a class="header" href="#basic-tools" id="basic-tools">Basic Tools</a></h2>
+<p>** TBD **: list and describe basic/common command line tools everybody should know e.g. ls, cd, cp, ...</p>
+<h2><a class="header" href="#advanced-tools" id="advanced-tools">Advanced Tools</a></h2>
+<p>** TBD **: list and describe usefull commandline tools for various tasks e.g. socat, netcat, grep, ...</p>
+<h1><a class="header" href="#clis" id="clis">CLIS</a></h1>
+<p>** TBD **</p>
+<h1><a class="header" href="#cli-syntax" id="cli-syntax">CLI Syntax</a></h1>
+<p>Before you start reading this chapter I highly recommend you read the <a href="http://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap12.html">POSIX Utility Conventions</a>.
+It is approximately a 10-20 minute read which will provide a solid base when it comes to CLIs and their syntax.</p>
+<h2><a class="header" href="#terminology" id="terminology">Terminology</a></h2>
+<p>If you read about command lines and command line interfaces usually you will find a specific kind of terminology
+(<em>command, utility, subcommand, argument, option, flag, switch, operand</em>) even though the meaning does slightly differ
+depending on which source or in which context a term is mentioned.
+To make sure we are all on the same page regarding these terms, please read the following table,
+which describes the terms and their meaning in the context of this book.</p>
+<table><thead><tr><th>Terminology of this Book</th><th>Description</th><th>Names in other standards/definitions</th></tr></thead><tbody>
+<tr><td><strong>command</strong></td><td>a cli tool / command</td><td>utility (Posix)</td></tr>
+<tr><td><strong>subcommand</strong></td><td>a subcommand of a command/cmd group</td><td></td></tr>
+<tr><td><strong>argument</strong> (required/positional)</td><td>required/positional-argument</td><td>operand (Posix)</td></tr>
+<tr><td><strong>option</strong></td><td>setting with additional argument</td><td>option (Posix)</td></tr>
+<tr><td><strong>switch</strong></td><td>Like an option but with a set of mutally exclusive arguments</td><td>option (Posix)</td></tr>
+<tr><td><strong>flag</strong></td><td>Binary indicator. Indicates on/off, true/false, ...</td><td>option (Posix), Flag (Posix), switch</td></tr>
+<tr><td><strong>options</strong></td><td>Super set of flags + switches + options</td><td>options (Posix)</td></tr>
+</tbody></table>
+<p><strong>Attention</strong>: with the specification above there is an ambiguity when it comes to using the word options.</p>
+<p>Here, options could mean either:</p>
+<ul>
+<li>The plural of an option - a setting with an additional argument</li>
+<li>Options - The super set of flags + switches + options</li>
+</ul>
+<p>Therefore, when talking about the plural of option one should say options of type option, and when talking about the super set of all options, switches, and flags one should simply say options.</p>
+<h3><a class="header" href="#anotated-cli-help-example" id="anotated-cli-help-example">Anotated CLI Help Example</a></h3>
+<pre><code class="language-shell">Short description what this command does
+
+usage:
+
+cmd [flags] [options] &lt;username&gt; &lt;password&gt;
+
+arguments:
+    &lt;username&gt;  which shall be used for the login             # 1. required/positional-argument
+    &lt;password&gt;  associated with the specified username        # 2. required/positional-argument
+
+flags:
+    -f, --force                 execute action anyway         # 5. flag
+    -h, --help                  show this help message        # 6. flag
+
+options:
+    -i &lt;file&gt;, --input &lt;file&gt;   file which shall be processed # 3. option
+    -s &lt;unit&gt;, --speed &lt;unit&gt;   mph,kmh  [default: mph]       # 4. switch
+</code></pre>
+<h2><a class="header" href="#unix-cli" id="unix-cli">Unix CLI</a></h2>
+<h3><a class="header" href="#cli-elements" id="cli-elements">CLI Elements</a></h3>
+<table><thead><tr><th>Element</th><th>Description</th></tr></thead><tbody>
+<tr><td><strong>Text</strong></td><td>Text without brackets or braces</td></tr>
+<tr><td><strong>TEXT</strong></td><td>Upper case Text without brackets or braces</td></tr>
+<tr><td><strong>&lt;<strong>name</strong>&gt;</strong></td><td>Placeholder for which you must supply a value</td></tr>
+<tr><td><strong>[]</strong></td><td>Optional items</td></tr>
+<tr><td><strong>{}</strong></td><td>Set of required items; choose one</td></tr>
+<tr><td><strong>|</strong></td><td>Vertical bar, Separator for mutually exclusive items; choose one</td></tr>
+<tr><td><strong>(…)</strong></td><td>Ellipsis</td></tr>
+<tr><td><strong>-</strong></td><td>Dash (often used as file argument parameter to specify stdin as file</td></tr>
+<tr><td><strong>--</strong></td><td>used to indicate the end of the options when running a command. E.g. very useful if you want to delete a file with the name <em>-option</em></td></tr>
+</tbody></table>
+<h2><a class="header" href="#command-bnf-based-on-cli-elements" id="command-bnf-based-on-cli-elements">Command BNF based on CLI Elements?</a></h2>
+<p>command_line = command options arguments
+command = Text
+options = ...(flag | switch | option)
+flag = -[Text] | --[Text]
+switch = -[Text]valarg | --[Text]valarg
+valarg =  arg | =arg | <arg> | =<arg></p>
+<h2><a class="header" href="#command-suit-bnf-based-on-cli-elements" id="command-suit-bnf-based-on-cli-elements">Command suit BNF based on CLI Elements?</a></h2>
+<p>command_line = command [global_options] subcommand options arguments
+command = Text
+subcommand = Text
+options = ...(flag | switch | option)</p>
+<h4><a class="header" href="#text-and-text" id="text-and-text">Text and TEXT</a></h4>
+<p>Text usually is used to either indicate items which need to be typed as shown or to define a placeholder.</p>
+<p><em>TBD</em> - Example subcommand (typed as shown)
+<em>TBD</em> - Example OPTIONS    (placeholder)</p>
+<h3><a class="header" href="#angle-brackets" id="angle-brackets">Angle Brackets &lt; &gt;</a></h3>
+<p>Angle brackets are used to define a placeholder for a operand/parameter/value.</p>
+<p><em>TBD</em> - Example required arg
+<em>TBD</em> - Value for an option</p>
+<h3><a class="header" href="#required-elementsarguements" id="required-elementsarguements">Required Elements/Arguements</a></h3>
+<h3><a class="header" href="#placeholders-values" id="placeholders-values">Placeholders, Values</a></h3>
+<h3><a class="header" href="#mutullay-exclusive-elements" id="mutullay-exclusive-elements">Mutullay Exclusive Elements</a></h3>
+<h3><a class="header" href="#required-mutullay-exclusive-elements" id="required-mutullay-exclusive-elements">Required Mutullay Exclusive Elements</a></h3>
+<h4><a class="header" href="#overview" id="overview">Overview</a></h4>
+<p>| Type                               | Styles                                              |
+|------------------------------------|-----------------------|-----------------------------|
+| (positional/required) - argument   | ARGUMENT, <argument>, <ARGUMENT>                    |
+| option value                       | --option=value, --option=VALUE, --option <value>, --option <VALUE>, --option value, --option VALUE |</p>
+<h2><a class="header" href="#windows-cli" id="windows-cli">Windows CLI</a></h2>
+<h3><a class="header" href="#cli-elements-1" id="cli-elements-1">CLI Elements</a></h3>
+<p>A definition of the Windows Command Line Syntax can be found <a href="https://docs.microsoft.com/en-us/windows-server/administration/windows-commands/command-line-syntax-key">here</a>.</p>
+<h1><a class="header" href="#references" id="references">References</a></h1>
+<ul>
+<li><a href="http://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap12.html">POSIX Utility Conventions</a></li>
+<li><a href="https://docs.microsoft.com/en-us/windows-server/administration/windows-commands/command-line-syntax-key">Windows Command-Line Syntax</a></li>
+</ul>
+<h1><a class="header" href="#configuration" id="configuration">Configuration</a></h1>
+<h2><a class="header" href="#cli-configuration" id="cli-configuration">CLI configuration</a></h2>
+<h3><a class="header" href="#cli-arguments-and-options" id="cli-arguments-and-options">CLI Arguments and options</a></h3>
+<p>** TBD **</p>
+<h3><a class="header" href="#env" id="env">Env</a></h3>
+<p>** TBD ** consider https://rust-lang-nursery.github.io/mdBook/format/config.html what they say about env. vars!</p>
+<h3><a class="header" href="#priories-of-settings" id="priories-of-settings">Priories of Settings</a></h3>
+<p>** TBD **</p>
+<h1><a class="header" href="#best-practices" id="best-practices">Best Practices</a></h1>
+<h2><a class="header" href="#creating-a-cli" id="creating-a-cli">Creating a cli</a></h2>
+<h3><a class="header" href="#cli-interface" id="cli-interface">CLI Interface</a></h3>
+<p>** TBD **: how to design the cli user and process interface, consider: stdin, stderr, stdout, exit code, signals</p>
+<h3><a class="header" href="#user-friendlyness" id="user-friendlyness">User friendlyness</a></h3>
+<p>** TBD **:  Easy to use, good defaults, common case easy, not common possible but hard, Be descriptive (short vs. long options/flags), auto color if tty, ...</p>
+<h3><a class="header" href="#dont-s" id="dont-s">Don't s</a></h3>
+<p>** TBD **</p>
+<h1><a class="header" href="#tui" id="tui">TUI</a></h1>
+<p>** TBD **</p>
+<p>** TBD ** </p>
+<h1><a class="header" href="#c" id="c">C</a></h1>
+<p>** TBD **</p>
+<h1><a class="header" href="#c-1" id="c-1">C++</a></h1>
+<p>** TBD **</p>
+<h1><a class="header" href="#java" id="java">Java</a></h1>
+<p>** TBD **</p>
+<h1><a class="header" href="#python" id="python">Python</a></h1>
+<p>** TBD **</p>
+<h3><a class="header" href="#libaries" id="libaries">Libaries</a></h3>
+<ul>
+<li><a href="https://click.palletsprojects.com/en/7.x/">Click</a></li>
+<li><a href="http://docopt.org/">Docopt</a></li>
+<li><a href="https://python-prompt-toolkit.readthedocs.io/en/master/">Prompt-Toolkit</a></li>
+</ul>
+<h3><a class="header" href="#talks" id="talks">Talks</a></h3>
+<ul>
+<li><a href="https://www.youtube.com/watch?v=pXhcPJK5cMc">Docopt talk</a></li>
+<li><a href="https://www.youtube.com/watch?v=gR73nLbbgqY">Writing Awesome Command-Line Programms in Python</a></li>
+<li><a href="https://www.youtube.com/watch?v=hJhZhLg3obk">Aweseom command line tools in python (repl)</a></li>
+<li><a href="https://www.youtube.com/watch?v=ubXXmQzzNGo">Lets make better command line applications</a></li>
+</ul>
+<h1><a class="header" href="#rust" id="rust">Rust</a></h1>
+<p>The rust community has crated a working group (<a href="https://github.com/rust-lang-nursery/cli-wg">CLI-WG</a>) which is focusing an creating information and tooling
+for people which are interested in creating cli tools using rust. I'll recomend you take a look at their [book][Command Line Applicaitons in Rust].</p>
+<h3><a class="header" href="#libraries" id="libraries">Libraries</a></h3>
+<ul>
+<li><a href="https://clap.rs/">clap</a></li>
+</ul>
+<h3><a class="header" href="#references-1" id="references-1">References</a></h3>
+<ul>
+<li><a href="https://github.com/rust-lang-nursery/cli-wg">CLI-WG</a></li>
+<li><a href="https://rust-lang-nursery.github.io/cli-wg/">CLI-WG Book</a></li>
+</ul>
+<h1><a class="header" href="#ruby" id="ruby">Ruby</a></h1>
+<p>If you want to learn or read about more details on how to create great command line tools using ruby,
+I highly recommend you read this <a href="https://pragprog.com/book/dccar/build-awesome-command-line-applications-in-ruby">Book</a>, it covers the topic exhaustively.</p>
+<h3><a class="header" href="#talks-1" id="talks-1">Talks</a></h3>
+<ul>
+<li><a href="https://www.youtube.com/watch?v=1ILEw6Qca3U">Make awesome command line apps with ruby</a></li>
+</ul>
+<h3><a class="header" href="#references-2" id="references-2">References</a></h3>
+<ul>
+<li><a href="https://pragprog.com/book/dccar/build-awesome-command-line-applications-in-ruby">Build Awesome Command-Line Applications in Ruby</a></li>
+</ul>
+<h1><a class="header" href="#references-3" id="references-3">References</a></h1>
+<h2><a class="header" href="#documents" id="documents">Documents</a></h2>
+<ul>
+<li><a href="http://people.fas.harvard.edu/%7Elib113/reference/unix/writingtools.html">Writing Linux Tools</a></li>
+<li><a href="http://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap12.html">POSIX utility conventions</a></li>
+<li><a href="https://docs.microsoft.com/en-us/windows-server/administration/windows-commands/command-line-syntax-key">Windows Command-Line Syntax</a></li>
+<li><a href="http://docopt.org/">Docopt documentation</a></li>
+<li><a href="https://encodingwissen.de/codecs/interfacetypen/#cli">Encodingwissen win cli</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Getopt">Getopt wikipedia</a></li>
+</ul>
+<h2><a class="header" href="#talks-2" id="talks-2">Talks</a></h2>
+<ul>
+<li><a href="https://www.youtube.com/watch?v=pXhcPJK5cMc">Docopt talk</a></li>
+<li><a href="https://www.youtube.com/watch?v=ubXXmQzzNGo">Lets make better command line applications</a></li>
+<li><a href="https://www.youtube.com/watch?v=gR73nLbbgqY">Writing Awesome Command-Line Programms in Python</a></li>
+<li><a href="https://www.youtube.com/watch?v=1ILEw6Qca3U">Make awesome command line apps with ruby</a></li>
+<li><a href="https://www.youtube.com/watch?v=hJhZhLg3obk">Aweseom command line tools in python (repl)</a></li>
+</ul>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                        
+
+                        
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                
+
+                
+            </nav>
+
+        </div>
+
+        
+
+        
+
+        
+
+        
+        <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
+        
+
+        <script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+        
+
+        
+        
+        <script type="text/javascript">
+        window.addEventListener('load', function() {
+            window.setTimeout(window.print, 100);
+        });
+        </script>
+        
+        
+
+    </body>
+</html>
